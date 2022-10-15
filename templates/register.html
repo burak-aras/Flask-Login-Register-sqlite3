@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+</head>
+
+<body  style="text-align: center;">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <header style="font-size: 2rem ;"> REGISTER PAGE</header>
+    <br>
+    <form action="/register" method="post">
+        <div>
+            <span>UserName :</span>
+            <input type="username" name="username" id="username" placeholder="username">
+        </div>
+        <div>
+            <br>
+            <span>Email : </span>
+            <input type="email" name="email" placeholder="email">
+        </div>
+        <div>
+            <br>
+            <span>Password :</span>
+            <input type="pasword" name="password" id="password" placeholder="password">
+        </div>
+        <div>
+            <br>
+            <span>Coniform Pass : </span>
+            <input type="coniformPass" name="coniiformPass" id="coniformPass" placeholder="password">
+        </div>
+        <div>
+            <br>
+            <input type="submit" id="submit" name="submit">
+        </div>
+    </form>
+
+</body>
+
+</html>
