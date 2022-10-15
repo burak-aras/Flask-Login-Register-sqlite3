@@ -5,7 +5,7 @@ db=sqlite3.connect("database.db",check_same_thread=False)
 im=db.cursor()
 
 app = Flask( __name__)
-app.secret_key = "super secret key"
+app.secret_key = "super secret key1"
 
 
 @app.route("/")
