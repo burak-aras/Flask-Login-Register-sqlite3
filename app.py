@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request , redirect,url_for,flash
 import sqlite3
 
-db=sqlite3.connect("database.db",check_same_thread=False)
-im=db.cursor()
-
 app = Flask( __name__)
 app.secret_key = "super secret key"
 
@@ -15,37 +12,50 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    
+    db=sqlite3.connect("database.db",check_same_thread=False)
+    im=db.cursor()
+
     if request.method=="POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        im.execute("""SELECT * FROM userTable WHERE email="{}" and password="{}" """.format(email,password))
-        kontrol=im.fetchone()
-        if kontrol :
-            flash("successfully signed in")
+        try:
+            email = request.form["email"]
+            password = request.form["password"]
+            im.execute("SELECT * FROM userTable WHERE email='%s' AND password='%s'" %(email,password))
+            kontrol=im.fetchone()
+            flash(kontrol[3])
             return redirect(url_for("login"))
-        else:
+        except:
             flash("email or password is wrong")
+        finally:
+            db.commit()
+            db.close()
+
     return render_template("login.html")
 
 
 @app.route("/register" , methods=["POST","GET"])
 def register():
+    
+    db=sqlite3.connect("database.db",check_same_thread=False)
+    im=db.cursor()
+
     if request.method == "POST":
-        username = str(request.form["username"])
-        email = str(request.form["email"])
-        password = str(request.form["password"])
-        coniiformPass = str(request.form["coniiformPass"])
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+        coniiformPass = request.form["coniiformPass"]
         if username and email and password and coniiformPass :
             if password == coniiformPass:
                 im.execute("""SELECT * FROM userTable WHERE email="{}" """.format(email))
                 kontrol=im.fetchone()
                 if kontrol:
-                    flash("email is already exist")
+                    flash("{} is already exist".format(kontrol[1]))
                 else:
                     try:
-                        db_inputs="""INSERT INTO userTable VALUES ("{}","{}","{}")""".format(username,email,password)
+                        db_inputs="""INSERT INTO userTable VALUES ("%s","%s","%s","successfully signed in")"""%(username,email,password)
                         im.execute(db_inputs)
                         db.commit()
+                        db.close()
                         flash("successfully signed up")
                         return redirect(url_for("login"))
                     except:
